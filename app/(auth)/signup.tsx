@@ -12,7 +12,6 @@ import {
 } from '../../services/auth/authExceptions';
 import { useTheme } from '@/components/ThemeContext';
 import { lightTheme, darkTheme } from '@/constants/Colors';
-import { AuthUser } from '../../services/auth/authUser';
 
 const auth = AuthService.firebase();
 const { width } = Dimensions.get('window');
@@ -62,12 +61,12 @@ export default function SignupScreen() {
   };
 
   return (
-    <KeyboardAvoidingView 
+    <KeyboardAvoidingView
       style={[styles.container, { backgroundColor: currentTheme.background }]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <StatusBar translucent backgroundColor="transparent" barStyle={theme === 'dark' ? 'light-content' : 'dark-content'} />
-      
+
       <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: Math.max(insets.bottom, 40) }} showsVerticalScrollIndicator={false}>
         {/* We can use a slightly different background header or reuse the image style */}
         <View style={styles.topCircle}>
@@ -127,8 +126,8 @@ export default function SignupScreen() {
 
             {error ? <Text style={styles.error}>{error}</Text> : null}
 
-            <TouchableOpacity 
-              style={[styles.button, { backgroundColor: currentTheme.primary, marginTop: 10 }]} 
+            <TouchableOpacity
+              style={[styles.button, { backgroundColor: currentTheme.primary, marginTop: 10 }]}
               onPress={handleSignup}
               activeOpacity={0.8}
             >
@@ -136,8 +135,8 @@ export default function SignupScreen() {
               <Ionicons name="checkmark-circle-outline" size={20} color="#fff" />
             </TouchableOpacity>
 
-            <TouchableOpacity 
-              style={[styles.googleButton, { backgroundColor: currentTheme.surface, borderColor: currentTheme.text + '20' }]} 
+            <TouchableOpacity
+              style={[styles.googleButton, { backgroundColor: currentTheme.surface, borderColor: currentTheme.text + '20' }]}
               onPress={handleGoogleSignup}
               activeOpacity={0.8}
             >

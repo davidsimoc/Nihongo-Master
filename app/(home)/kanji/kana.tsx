@@ -21,15 +21,6 @@ const AVAILABLE_WIDTH = width - CONTENT_PADDING;
 const CARD_SIZE = (AVAILABLE_WIDTH - (CARD_MARGIN * 2 * 5)) / 5;
 const CARD_SIZE_KANJI = CARD_SIZE;
 
-interface KanjiInfo { // Aici definim tipul datelor din kanjiDataN5
-    onyomi: string[];
-    kunyomi: string[];
-    meaning: string;
-    onyomiWords: { word: string; reading: string; meaning: string }[];
-    kunyomiWords: { word: string; reading: string; meaning: string }[];
-    examples: { sentence: string; reading: string; meaning: string }[];
-}
-
 const N5_KANJI_FALLBACK = [
     '一', '七', '万', '三', '上', '下', '中', '九', '二', '五',
     '人', '今', '休', '何', '先', '入', '八', '六', '円', '出',
@@ -142,7 +133,6 @@ export default function HiraganaScreen() {
     const [katakanaDakutenFlatData, setKatakanaDakutenFlatData] = useState<any[]>([]);
     const [katakanaYoonFlatData, setKatakanaYoonFlatData] = useState<any[]>([]);
 
-    // State pentru kanji cu API
     const [kanjiListN5, setKanjiListN5] = useState<string[]>([]);
     const [kanjiListN4, setKanjiListN4] = useState<string[]>([]);
     const [kanjiListN3, setKanjiListN3] = useState<string[]>([]);
@@ -153,7 +143,7 @@ export default function HiraganaScreen() {
     const [sectionPositions, setSectionPositions] = useState<Record<string, number>>({});
     const kanjiScrollViewRef = useRef<ScrollView>(null);
 
-    const { theme, toggleTheme } = useTheme(); // Acum funcționează corect!
+    const { theme } = useTheme();
     const currentTheme = theme === 'light' ? lightTheme : darkTheme;
 
     useEffect(() => {
@@ -240,10 +230,6 @@ export default function HiraganaScreen() {
             </TouchableOpacity>
         );
     };
-    const renderSectionHeader = ({ section }: { section: any }) => (
-        <Text style={{ ...styles.category, color: currentTheme.text }}>{section.title}</Text>
-    );
-
 
 
     return (
@@ -263,7 +249,6 @@ export default function HiraganaScreen() {
                 </TouchableOpacity>
             </View>
 
-            {/* Premium Segmented Control */}
             <View style={styles.segmentedWrapper}>
                 <View style={[styles.tabContainer, { backgroundColor: currentTheme.surface, borderColor: currentTheme.text + '05' }]}>
                     <TouchableOpacity

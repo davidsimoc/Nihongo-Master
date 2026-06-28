@@ -10,7 +10,6 @@ import {
 } from '../../services/auth/authExceptions';
 import { useTheme } from '@/components/ThemeContext';
 import { lightTheme, darkTheme } from '@/constants/Colors';
-import { AuthUser } from '../../services/auth/authUser'; // Ensure we can handle auth user
 
 const auth = AuthService.firebase();
 const { width } = Dimensions.get('window');
@@ -55,12 +54,12 @@ export default function LoginScreen() {
   };
 
   return (
-    <KeyboardAvoidingView 
+    <KeyboardAvoidingView
       style={[styles.container, { backgroundColor: currentTheme.background }]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <StatusBar translucent backgroundColor="transparent" barStyle={theme === 'dark' ? 'light-content' : 'dark-content'} />
-      
+
       <ScrollView contentContainerStyle={{ flexGrow: 1, paddingBottom: Math.max(insets.bottom, 40) }} showsVerticalScrollIndicator={false}>
         <View style={styles.topCircle}>
           <Image
@@ -107,8 +106,8 @@ export default function LoginScreen() {
 
             {error ? <Text style={styles.error}>{error}</Text> : null}
 
-            <TouchableOpacity 
-              style={[styles.button, { backgroundColor: currentTheme.primary, marginTop: 10 }]} 
+            <TouchableOpacity
+              style={[styles.button, { backgroundColor: currentTheme.primary, marginTop: 10 }]}
               onPress={handleLogin}
               activeOpacity={0.8}
             >
@@ -116,8 +115,8 @@ export default function LoginScreen() {
               <Ionicons name="arrow-forward" size={20} color="#fff" />
             </TouchableOpacity>
 
-            <TouchableOpacity 
-              style={[styles.googleButton, { backgroundColor: currentTheme.surface, borderColor: currentTheme.text + '20' }]} 
+            <TouchableOpacity
+              style={[styles.googleButton, { backgroundColor: currentTheme.surface, borderColor: currentTheme.text + '20' }]}
               onPress={handleGoogleLogin}
               activeOpacity={0.8}
             >

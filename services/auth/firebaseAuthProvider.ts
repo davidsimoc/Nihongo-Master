@@ -28,7 +28,7 @@ export class FirebaseAuthProvider implements AuthProvider {
   private initialized = false;
 
   async initialize() {
-   // this.initialized = true;
+    // this.initialized = true;
     if (!this.initialized) {
       initializeApp(firebaseConfig);
       this.initialized = true;
@@ -44,24 +44,23 @@ export class FirebaseAuthProvider implements AuthProvider {
     try {
       await createUserWithEmailAndPassword(getAuth(), email, password);
       const user = this.currentUser();
-      if (user && user.uid) 
-        {
-          const firestore = getFirestore(); // Initializează Firestore
-          const usersCollection = collection(firestore, 'users');
-          const userDocRef = doc(usersCollection, user.uid);
-          await setDoc(userDocRef, {
-            username: username,
-            email: email,
-            createdAt: serverTimestamp(), 
-          })
-          console.log("Sending verification email..."); // Add this line
+      if (user && user.uid) {
+        const firestore = getFirestore(); // Initializează Firestore
+        const usersCollection = collection(firestore, 'users');
+        const userDocRef = doc(usersCollection, user.uid);
+        await setDoc(userDocRef, {
+          username: username,
+          email: email,
+          createdAt: serverTimestamp(),
+        })
+        console.log("Sending verification email..."); // Add this line
 
-          //return AuthUser.fromFirebase(user); // Returnează utilizatorul creat
-          await this.sendEmailVerification(); // Send verification email
-          console.log("Verification email sent."); // Add this line
+        //return AuthUser.fromFirebase(user); // Returnează utilizatorul creat
+        await this.sendEmailVerification(); // Send verification email
+        console.log("Verification email sent."); // Add this line
 
-          return user;
-        }
+        return user;
+      }
       throw new UserNotLoggedInAuthException();
     } catch (e: any) {
       switch (e.code) {
@@ -79,27 +78,27 @@ export class FirebaseAuthProvider implements AuthProvider {
 
   async logIn(email: string, password: string): Promise<AuthUser> {
     try {
-        const userCredential = await signInWithEmailAndPassword(getAuth(), email, password);
-        const user: User = userCredential.user; // Explicitly type user
-        if (user) {
-            if (!user.emailVerified) {
-                await signOut(getAuth()); // Sign out the user
-                throw new Error("EmailNotVerified"); // Or use your custom exception
-            }
-            return AuthUser.fromFirebase(user);
+      const userCredential = await signInWithEmailAndPassword(getAuth(), email, password);
+      const user: User = userCredential.user; // Explicitly type user
+      if (user) {
+        if (!user.emailVerified) {
+          await signOut(getAuth()); // Sign out the user
+          throw new Error("EmailNotVerified"); // Or use your custom exception
         }
-        throw new UserNotLoggedInAuthException();
+        return AuthUser.fromFirebase(user);
+      }
+      throw new UserNotLoggedInAuthException();
     } catch (e: any) {
-        switch (e.code) {
-            case "auth/user-not-found":
-                throw new UserNotFoundAuthException();
-            case "auth/wrong-password":
-                throw new WrongPasswordAuthException();
-            case "EmailNotVerified": // Handle the new error case
-                throw new Error("Please verify your email address before logging in.");
-            default:
-                throw new GenericAuthException();
-        }
+      switch (e.code) {
+        case "auth/user-not-found":
+          throw new UserNotFoundAuthException();
+        case "auth/wrong-password":
+          throw new WrongPasswordAuthException();
+        case "EmailNotVerified": // Handle the new error case
+          throw new Error("Please verify your email address before logging in.");
+        default:
+          throw new GenericAuthException();
+      }
     }
   }
 
@@ -107,17 +106,14 @@ export class FirebaseAuthProvider implements AuthProvider {
     try {
       const { GoogleSignin } = require('@react-native-google-signin/google-signin');
       const { GoogleAuthProvider, signInWithCredential } = require('firebase/auth');
-      
-      // Ensure GoogleSignin is configured (webClientId is needed from Firebase Console)
+
       GoogleSignin.configure({
         webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || 'ADD_YOUR_WEB_CLIENT_ID_HERE.apps.googleusercontent.com',
         iosClientId: '1006721640718-on3hqtjo85i403ddeuk7g2fvdd7vpl5v.apps.googleusercontent.com',
       });
 
-      // Check if your device supports Google Play
       await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-      
-      // Get the users ID token
+
       const signInResult = await GoogleSignin.signIn();
       const idToken = signInResult.data?.idToken;
 
@@ -125,15 +121,12 @@ export class FirebaseAuthProvider implements AuthProvider {
         throw new Error('No ID token found');
       }
 
-      // Create a Google credential with the token
       const googleCredential = GoogleAuthProvider.credential(idToken);
 
-      // Sign-in the user with the credential
       const userCredential = await signInWithCredential(getAuth(), googleCredential);
       const user: User = userCredential.user;
 
       if (user) {
-        // Also save user to firestore
         const firestore = getFirestore();
         const usersCollection = collection(firestore, 'users');
         const userDocRef = doc(usersCollection, user.uid);

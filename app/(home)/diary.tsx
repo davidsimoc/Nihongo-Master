@@ -17,7 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/components/ThemeContext';
 import { lightTheme, darkTheme } from '@/constants/Colors';
-// @ts-ignore
+
 import { db, auth } from '@/firebaseConfig';
 import { doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { Auth, onAuthStateChanged, User } from 'firebase/auth';
@@ -71,7 +71,6 @@ export default function DiaryScreen() {
     };
   }, []);
 
-  // Aggregated data from completed nodes
   const learnedContent = useMemo(() => {
     let vocab: { word: string; reading: string; meaning: string; nodeId: string; nodeTitle: string }[] = [];
     let grammar: { title: string; explanation: string; examples: any[]; nodeId: string; nodeTitle: string }[] = [];
@@ -98,7 +97,6 @@ export default function DiaryScreen() {
       }
     });
 
-    // Apply search filter
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       vocab = vocab.filter(v =>

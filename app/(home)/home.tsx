@@ -36,7 +36,6 @@ export default function HomeScreen() {
   const [lessonVisible, setLessonVisible] = useState(false);
   const [starredWords, setStarredWords] = useState<string[]>([]);
 
-  // Animation state (initialized to a large value to hide the solid path at start)
   const pathLength = useSharedValue(3000);
   const progress = useSharedValue(0);
   const [maxCompletedIndex, setMaxCompletedIndex] = useState(-1);
@@ -46,13 +45,10 @@ export default function HomeScreen() {
     const now = Date.now();
     return starredWords.filter(word => {
       const meta = flashMeta[word];
-      // If no meta exists, it's a "new" card and interval is 0, so nextReview is 0
-      // We should treat it as due if never reviewed
       return (meta?.nextReview ?? 0) <= now;
     }).length;
   }, [starredWords, flashMeta]);
 
-  // Load progress from Firebase on mount
   useEffect(() => {
     clearSpeechCache();
     const firebaseAuth = auth as Auth;
@@ -66,7 +62,6 @@ export default function HomeScreen() {
         return;
       }
 
-      // 1. Listen for userProgress (starredWords, road, etc.)
       const docRef = doc(db, 'userProgress', user.uid);
       unsubscribeProgress = onSnapshot(docRef, (docSnap) => {
         if (docSnap.exists()) {
@@ -84,7 +79,6 @@ export default function HomeScreen() {
         console.error("Error listening to progress:", error);
       });
 
-      // 2. Listen for flashcards subcollection metadata
       const flashRef = collection(db, 'users', user.uid, 'flashcards');
       unsubscribeFlashcards = onSnapshot(flashRef, (snap) => {
         const meta: Record<string, any> = {};
@@ -102,7 +96,6 @@ export default function HomeScreen() {
     };
   }, []);
 
-  // Proactive pre-fetch for the NEXT unlocked node
   useEffect(() => {
     const nextNode = roadData.find(n => n.status === 'unlocked');
     if (nextNode) {
@@ -140,7 +133,6 @@ export default function HomeScreen() {
       return newData;
     });
 
-    // Persist to Firebase
     if (user && updatedData.length > 0) {
       try {
         console.log("Saving progress for UID:", user.uid, "Nodes:", updatedData.length);
@@ -201,9 +193,7 @@ export default function HomeScreen() {
     }
   };
 
-  // Calculate professional path progress based on pixel distances
   useEffect(() => {
-    // 1. Calculate segment lengths
     let totalLen = 0;
     const segmentLengths = [0];
 
@@ -213,13 +203,11 @@ export default function HomeScreen() {
       const dx = (p2.x - p1.x) * width / 100;
       const dy = p2.y - p1.y;
       const dist = Math.sqrt(dx * dx + dy * dy);
-      // Rough bezier approximation (S-curves are ~8% longer than straight lines)
       const approxDist = dist * 1.08;
       totalLen += approxDist;
       segmentLengths.push(totalLen);
     }
 
-    // 2. Find the target node (max completed index + 1)
     const targetNodeIndex = Math.min(maxCompletedIndex + 1, roadData.length - 1);
     const targetPixelLength = segmentLengths[targetNodeIndex];
 
@@ -228,7 +216,6 @@ export default function HomeScreen() {
   }, [roadData, width, maxCompletedIndex]);
 
   const animatedProps = useAnimatedProps(() => {
-    // Show 'progress.value' pixels, then a huge gap to hide rest of solid line
     return {
       strokeDasharray: [progress.value, 5000],
     };
@@ -257,7 +244,6 @@ export default function HomeScreen() {
 
     return (
       <Svg style={StyleSheet.absoluteFill}>
-        {/* Layer 1: Solid faint gray/beige base (The "road" base) */}
         <Path
           d={pathData}
           stroke={theme === 'dark' ? '#222' : '#E8DFCC'}
@@ -266,7 +252,6 @@ export default function HomeScreen() {
           strokeLinecap="round"
         />
 
-        {/* Layer 2: Dotted Red overlay (The "latent" or locked path) */}
         <Path
           d={pathData}
           stroke={currentTheme.primary + '35'}
@@ -276,7 +261,6 @@ export default function HomeScreen() {
           strokeLinecap="round"
         />
 
-        {/* Layer 3: Animated Solid Red (The completed progress) */}
         <AnimatedPath
           d={pathData}
           stroke={currentTheme.primary}
@@ -303,11 +287,10 @@ export default function HomeScreen() {
           activeOpacity={0.8}
           style={[
             styles.nodeTouchable,
-            { left: leftPosition - 60 } // Centered based on 120 width
+            { left: leftPosition - 60 }
           ]}
           onPress={() => {
             if (!isLocked) {
-              // Pre-fetch immediately on tap for zero-delay
               const texts: string[] = [];
               node.steps.forEach(step => {
                 if (step.type === 'story') texts.push(step.text);
@@ -369,7 +352,6 @@ export default function HomeScreen() {
       const firstNode = roadData.find(n => n.chapterId === chapter.id);
       if (!firstNode) return null;
 
-      // Position header 120px above the first node of the chapter for perfect visibility
       const topOffset = firstNode.position.y - 120;
 
       return (
@@ -426,7 +408,6 @@ export default function HomeScreen() {
         onToggleStar={toggleStar}
       />
 
-      {/* Floating Action Button for Review */}
       <TouchableOpacity
         style={[styles.fab, { backgroundColor: currentTheme.primary }]}
         onPress={() => router.push('/flashcards')}

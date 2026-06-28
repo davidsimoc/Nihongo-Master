@@ -2,15 +2,10 @@ import React, { useState, useEffect } from "react";
 import { View, Text, Modal, FlatList, Pressable, TouchableOpacity, Image, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import {
-  GiftedChat,
-  IMessage,
-  InputToolbar,
-  InputToolbarProps,
+  IMessage
 } from "react-native-gifted-chat";
-import { GoogleGenAI } from "@google/genai";
 import { useTheme } from "@/components/ThemeContext";
 import { lightTheme, darkTheme } from "@/constants/Colors";
-import Constants from "expo-constants";
 import ChatUI from "@/components/ChatUI";
 import { getAuth } from "firebase/auth";
 import {
@@ -22,34 +17,6 @@ import {
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import VoiceChatUI from "@/components/VoiceChatUI";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
-
-const TEXT_INSTRUCTION = `
-### MANDATORY RULES ###
-1. LANGUAGE: Respond ONLY in Japanese (primary) and English (secondary/explanations).
-2. FORBIDDEN: Never use Russian, Romanian, or any other language. 
-3. ROLE: You are Yuki, a friendly Japanese friend.
-4. BEHAVIOR: Be very talkative, expressive, and natural. Do not limit your words. Write long stories if you want!
-`;
-
-const VOICE_INSTRUCTION = `
-### MANDATORY RULES ###
-1. LANGUAGE: Respond ONLY in Japanese (primary) and English (secondary/explanations).
-2. FORBIDDEN: Never use Russian, Romanian, or any other language. 
-3. ROLE: You are Yuki, a friendly Japanese friend.
-4. BEHAVIOR: Keep responses VERY SHORT (max 10-15 words). This is for a voice call, so be concise!
-`;
-
-const initialMessages: IMessage[] = [
-  {
-    _id: 1,
-    text: "こんにちは！私はあなたの日本語の先生です。何を練習したいですか？ (Kon'nichiwa! I am your Japanese teacher. What do you want to practice?)",
-    createdAt: new Date(),
-    user: {
-      _id: 2,
-      name: "Sensei AI",
-    },
-  },
-];
 
 export default function ChatbotScreen() {
   const { theme } = useTheme();
@@ -137,7 +104,7 @@ export default function ChatbotScreen() {
         "assistant",
         "こんにちは！私はあなたの日本語の先生です。何を練習したいですか？ (Kon'nichiwa! I am your Japanese teacher. What do you want to practice?)",
       );
-    } catch {}
+    } catch { }
   };
 
   const handleDelete = async (id: string) => {
@@ -176,8 +143,8 @@ export default function ChatbotScreen() {
       >
         <View style={styles.headerLeft}>
           <View style={[styles.avatarContainer, { borderColor: currentTheme.primary + "20" }]}>
-            <Image 
-              source={require('../../assets/images/yuki_avatar.png')} 
+            <Image
+              source={require('../../assets/images/yuki_avatar.png')}
               style={styles.headerAvatar}
               defaultSource={require('../../assets/images/profileImg.avif')}
             />
@@ -190,7 +157,7 @@ export default function ChatbotScreen() {
         </View>
 
         <View style={styles.headerActions}>
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={() => setIsVoiceMode((prev) => !prev)}
             style={[styles.actionBtn, { backgroundColor: currentTheme.surface }]}
           >
@@ -200,8 +167,8 @@ export default function ChatbotScreen() {
               color={currentTheme.text}
             />
           </TouchableOpacity>
-          
-          <TouchableOpacity 
+
+          <TouchableOpacity
             onPress={() => setShowHistory(true)}
             style={[styles.actionBtn, { backgroundColor: currentTheme.surface }]}
           >
@@ -243,10 +210,10 @@ export default function ChatbotScreen() {
           edges={["left", "right", "bottom"]}
         >
           <View
-            style={{ 
-              paddingHorizontal: 20, 
-              paddingTop: Math.max(insets.top, 20), 
-              paddingBottom: 12 
+            style={{
+              paddingHorizontal: 20,
+              paddingTop: Math.max(insets.top, 20),
+              paddingBottom: 12
             }}
           >
             <View

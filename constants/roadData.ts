@@ -180,7 +180,7 @@ export const INITIAL_ROAD_DATA: RoadNode[] = [
             },
             {
                 type: 'listening',
-                audioText: "Tsugi wa Tokyo eki desu.",
+                audioText: "次は東京駅です。",
                 question: "Where is the train going?",
                 options: ["Narita", "Tokyo", "Osaka", "Kyoto"],
                 correctAnswer: "Tokyo"

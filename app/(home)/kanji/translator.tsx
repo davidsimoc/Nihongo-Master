@@ -8,26 +8,19 @@ import {
     ActivityIndicator,
     KeyboardAvoidingView,
     Platform,
-    TouchableWithoutFeedback,
-    Keyboard,
     Clipboard,
-    Dimensions,
     ScrollView,
     Alert
 } from 'react-native';
 import { useRouter, useFocusEffect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { BlurView } from 'expo-blur';
-import Animated, { FadeIn, FadeOut, SlideInRight, Layout } from 'react-native-reanimated';
+import Animated, { Layout } from 'react-native-reanimated';
 import { lightTheme, darkTheme } from '@/constants/Colors';
 import { useTheme } from '@/components/ThemeContext';
 import { speakJapanese, stopSpeech } from '@/services/ttsService';
 import ARTranslator from '@/components/ARTranslator';
 
-const { width } = Dimensions.get('window');
-//const TRANSLATE_ENDPOINT = "http://192.168.0.126:8000/chat";
-//const TRANSLATE_ENDPOINT = `${process.env.EXPO_PUBLIC_API_URL}/chat`;
 const TRANSLATE_ENDPOINT = `${process.env.EXPO_PUBLIC_API_URL}/translate-only`;
 
 export default function TranslatorScreen() {
@@ -35,7 +28,6 @@ export default function TranslatorScreen() {
     const insets = useSafeAreaInsets();
     const { theme } = useTheme();
     const currentTheme = theme === 'light' ? lightTheme : darkTheme;
-    const isDark = theme === 'dark';
 
     const [sourceText, setSourceText] = useState('');
     const [translatedText, setTranslatedText] = useState('');
@@ -101,7 +93,7 @@ export default function TranslatorScreen() {
                 },
                 body: JSON.stringify({
                     text: sourceText,
-                    source_lang: sourceLang, 
+                    source_lang: sourceLang,
                     target_lang: targetLang
                 }),
             });
@@ -171,8 +163,8 @@ export default function TranslatorScreen() {
                     <Text style={[styles.headerTitle, { color: currentTheme.text }]}>Translator</Text>
                 </View>
                 <View style={{ flex: 1 }} />
-                <TouchableOpacity 
-                    style={[styles.arToggleButton, { backgroundColor: currentTheme.primary + '15' }]} 
+                <TouchableOpacity
+                    style={[styles.arToggleButton, { backgroundColor: currentTheme.primary + '15' }]}
                     onPress={() => setIsARMode(true)}
                 >
                     <Ionicons name="scan-outline" size={24} color={currentTheme.primary} />

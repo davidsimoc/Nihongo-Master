@@ -1,15 +1,12 @@
-import { Tabs, Stack, useRouter } from 'expo-router';
+import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet, TouchableOpacity, Text } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { StyleSheet } from 'react-native';
 import { useTheme } from '@/components/ThemeContext'; // Calea corectă!
 import { lightTheme, darkTheme } from '@/constants/Colors'; // Asigură-te că ai importat corect temele
 import SwiftUITabBarWrapper from '@/components/SwiftUITabBar';
-import { NativeTabs } from 'expo-router/unstable-native-tabs';
 
 export default function HomeLayout() {
-    const navigation = useNavigation();
-    const { theme, toggleTheme } = useTheme(); // Acum funcționează corect!
+    const { theme } = useTheme();
     const currentTheme = theme === 'light' ? lightTheme : darkTheme;
     return (
         <Tabs

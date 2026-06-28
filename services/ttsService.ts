@@ -1,17 +1,12 @@
-// services/ttsService.ts
 import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system/legacy';
 import * as Crypto from 'expo-crypto';
 
-// Server configuration
-//const TTS_URL = "http://192.168.0.126:8000/tts";
 const TTS_URL = `${process.env.EXPO_PUBLIC_API_URL}/tts`;
 
-// In-memory reference for the current sound
 let currentSound: Audio.Sound | null = null;
 const CACHE_DIR = `${FileSystem.cacheDirectory}tts_cache/`;
 
-// Track active fetches to avoid redundant/conflicting downloads
 const activeFetches = new Map<string, Promise<void>>();
 
 const ensureCacheDir = async () => {
@@ -33,14 +28,10 @@ type SpeakOptions = {
   onError?: (error: unknown) => void;
 };
 
-/**
- * Downloads audio if not already in cache or being fetched
- */
 const downloadToCache = async (text: string, path: string) => {
   const fileInfo = await FileSystem.getInfoAsync(path);
   if (fileInfo.exists) return;
 
-  // If already fetching this text, wait for it
   if (activeFetches.has(text)) {
     return activeFetches.get(text);
   }
@@ -100,7 +91,6 @@ export const speakJapanese = async (text: string, options: SpeakOptions = {}) =>
   const { slow, onStart, onDone, onError } = options;
 
   try {
-    // Stop any current sound
     if (currentSound) {
       await currentSound.stopAsync().catch(() => { });
       await currentSound.unloadAsync().catch(() => { });
@@ -109,16 +99,13 @@ export const speakJapanese = async (text: string, options: SpeakOptions = {}) =>
 
     const path = await getCachePath(text);
 
-    // Ensure file is downloaded before proceed to onStart/playback
     await downloadToCache(text, path);
 
-    // Override iOS silent switch
     await Audio.setAudioModeAsync({
       playsInSilentModeIOS: true,
       staysActiveInBackground: false,
     });
 
-    // NOW call onStart - we are ready to play
     onStart?.();
 
     const { sound } = await Audio.Sound.createAsync(

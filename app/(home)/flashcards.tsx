@@ -16,23 +16,22 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
-  interpolate
 } from 'react-native-reanimated';
 import { useTheme } from '@/components/ThemeContext';
 import { lightTheme, darkTheme } from '@/constants/Colors';
 import { INITIAL_ROAD_DATA } from '@/constants/roadData';
-// @ts-ignore
+
 import { db, auth } from '@/firebaseConfig';
 import { doc, getDoc, updateDoc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
 
-const { width, height } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 
 type FlashcardMetadata = {
   word: string;
-  interval: number; // in days
+  interval: number;
   repetitions: number;
   easeFactor: number;
-  nextReview: number; // timestamp
+  nextReview: number;
 };
 
 export default function FlashcardsScreen() {
@@ -51,12 +50,10 @@ export default function FlashcardsScreen() {
 
   const fetchFlashcards = async (ignoreDue: boolean = false) => {
     setLoading(true);
-    // @ts-ignore
     const user = auth?.currentUser;
     if (!user) return;
 
     try {
-      // 1. Get starred words from userProgress
       const progRef = doc(db, 'userProgress', user.uid);
       const progSnap = await getDoc(progRef);
       const starredWords = progSnap.exists() ? (progSnap.data().starredWords || []) : [];
@@ -67,7 +64,6 @@ export default function FlashcardsScreen() {
         return;
       }
 
-      // 2. Get SRS metadata from flashcards collection
       const flashRef = collection(db, 'users', user.uid, 'flashcards');
       const flashSnap = await getDocs(flashRef);
       const metadataMap: Record<string, FlashcardMetadata> = {};
@@ -75,7 +71,6 @@ export default function FlashcardsScreen() {
         metadataMap[doc.id] = doc.data() as FlashcardMetadata;
       });
 
-      // 3. Find full word data from roadData
       const allVocab: Record<string, any> = {};
       INITIAL_ROAD_DATA.forEach(node => {
         node.steps.forEach(step => {
@@ -87,7 +82,6 @@ export default function FlashcardsScreen() {
         });
       });
 
-      // 4. Combine and filter
       const now = Date.now();
       const processedCards = starredWords
         .map((word: string) => {
@@ -101,7 +95,6 @@ export default function FlashcardsScreen() {
           return { ...allVocab[word], ...meta };
         })
         .filter((card: any) => ignoreDue || card.nextReview <= now)
-        // Sort by urgency (oldest first)
         .sort((a: any, b: any) => a.nextReview - b.nextReview);
 
       setCards(processedCards);
@@ -120,7 +113,6 @@ export default function FlashcardsScreen() {
   }, []);
 
   const flipCard = () => {
-    // Prevent multiple flips during animation
     if (Math.abs(rotateY.value % 180) > 1) return;
 
     const target = isFlipped ? 0 : 180;
@@ -151,7 +143,7 @@ export default function FlashcardsScreen() {
     };
   });
 
-  // SM-2 Algorithm Integration
+  //SM-2
   const handleReview = async (quality: number) => {
     const currentCard = cards[currentIndex];
     const user = (auth as any).currentUser;
@@ -159,7 +151,6 @@ export default function FlashcardsScreen() {
 
     let { interval, repetitions, easeFactor } = currentCard;
 
-    // SM-2 Logic
     if (quality >= 3) {
       if (repetitions === 0) interval = 1;
       else if (repetitions === 1) interval = 6;
@@ -196,7 +187,7 @@ export default function FlashcardsScreen() {
       setIsFlipped(false);
       rotateY.value = 0;
     } else {
-      setCards([]); // Done!
+      setCards([]);
     }
   };
 
@@ -269,7 +260,6 @@ export default function FlashcardsScreen() {
           onPress={flipCard}
           style={styles.cardContainer}
         >
-          {/* Front Side */}
           <Animated.View style={[styles.card, { backgroundColor: currentTheme.surface }, frontAnimatedStyle]}>
             <Text style={[styles.sourceLabel, { color: currentTheme.primary + '40' }]}>{currentCard.nodeTitle}</Text>
             <Text style={[styles.wordText, { color: currentTheme.text }]}>{currentCard.word}</Text>
@@ -280,7 +270,6 @@ export default function FlashcardsScreen() {
             </View>
           </Animated.View>
 
-          {/* Back Side */}
           <Animated.View style={[styles.card, { backgroundColor: currentTheme.surface }, backAnimatedStyle]}>
             <Text style={[styles.meaningText, { color: currentTheme.text }]}>{currentCard.meaning}</Text>
             <View style={styles.backReadingContainer}>
@@ -291,7 +280,6 @@ export default function FlashcardsScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Review Actions */}
       {isFlipped && (
         <View style={[styles.actions, { paddingBottom: Math.max(insets.bottom, 20) }]}>
           <View style={styles.buttonRow}>

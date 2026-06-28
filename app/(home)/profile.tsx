@@ -7,8 +7,6 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
-  Dimensions,
-  Platform,
   ActivityIndicator,
   Modal,
   TextInput
@@ -18,12 +16,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from '@/components/ThemeContext';
 import { lightTheme, darkTheme } from '@/constants/Colors';
-// @ts-ignore
 import { db, auth } from '@/firebaseConfig';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { COUNTRIES, Country } from '@/constants/countries';
-
-const { width } = Dimensions.get('window');
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -58,11 +53,9 @@ export default function ProfileScreen() {
       if (!user) return;
 
       try {
-        // 1. Fetch Basic Profile
         const userRef = doc(db, 'users', user.uid);
         const userSnap = await getDoc(userRef);
 
-        // 2. Fetch Progress Stats
         const progRef = doc(db, 'userProgress', user.uid);
         const progSnap = await getDoc(progRef);
 
@@ -70,7 +63,6 @@ export default function ProfileScreen() {
           const data = userSnap.data();
           let updatedData = { ...data };
 
-          // Generate Passport No if missing
           if (!data.passportNo) {
             const newNo = generatePassportNo();
             await setDoc(userRef, { passportNo: newNo }, { merge: true });
@@ -159,12 +151,10 @@ export default function ProfileScreen() {
   return (
     <View style={[styles.container, { backgroundColor: currentTheme.background }]}>
       <ScrollView contentContainerStyle={{ paddingBottom: 100 }} showsVerticalScrollIndicator={false}>
-        {/* Header Background Pattern */}
         <View style={[styles.headerPattern, { backgroundColor: currentTheme.primary + '05' }]}>
           <Ionicons name="airplane" size={300} color={currentTheme.primary + '03'} style={styles.bgIcon} />
         </View>
 
-        {/* Top Tools */}
         <View style={[styles.topRow, { paddingTop: insets.top + 10 }]}>
           <Text style={[styles.headerHeading, { color: currentTheme.text }]}>Profile</Text>
           <TouchableOpacity
@@ -175,7 +165,6 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Passport Identity Card */}
         <View style={styles.passportWrapper}>
           <View style={[styles.passportCard, { backgroundColor: currentTheme.surface, borderColor: currentTheme.text + '08' }]}>
             <View style={styles.passportTop}>
@@ -221,7 +210,6 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        {/* Stats Grid */}
         <View style={styles.sectionHeader}>
           <Text style={[styles.sectionTitle, { color: currentTheme.text }]}>Journey Progress</Text>
         </View>
@@ -250,7 +238,6 @@ export default function ProfileScreen() {
           />
         </View>
 
-        {/* About Section */}
         <View style={styles.sectionHeader}>
           <Text style={[styles.sectionTitle, { color: currentTheme.text, marginBottom: 10 }]}>Traveler’s Log</Text>
           <TouchableOpacity onPress={() => setIsEditModalVisible(true)}>
@@ -268,7 +255,6 @@ export default function ProfileScreen() {
 
       </ScrollView>
 
-      {/* Edit About Me Modal */}
       <Modal
         visible={isEditModalVisible}
         transparent={true}
@@ -304,7 +290,6 @@ export default function ProfileScreen() {
         </View>
       </Modal>
 
-      {/* Country Picker Modal */}
       <Modal
         visible={isCountryModalVisible}
         transparent={true}

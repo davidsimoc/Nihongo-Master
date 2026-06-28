@@ -27,7 +27,6 @@ export default function KanjiDetailsPage() {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
   const currentTheme = theme === 'light' ? lightTheme : darkTheme;
-  const isDark = theme === 'dark';
 
   const fetchKanjiBasicInfo = async (kanji: string) => {
     try {
@@ -168,7 +167,6 @@ export default function KanjiDetailsPage() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        {/* Main Kanji Card */}
         <View style={[styles.mainCard, { backgroundColor: currentTheme.surface }]}>
           <Text style={[styles.kanjiLarge, { color: currentTheme.accent }]}>
             {selectedKanji}
@@ -186,7 +184,6 @@ export default function KanjiDetailsPage() {
           </TouchableOpacity>
         </View>
 
-        {/* Handwriting Modal */}
         <Modal
           visible={isHandwritingModalVisible}
           animationType="slide"
@@ -212,7 +209,6 @@ export default function KanjiDetailsPage() {
           </SafeAreaView>
         </Modal>
 
-        {/* Basic Info Section */}
         <View style={[styles.infoCard, { backgroundColor: currentTheme.surface }]}>
           <View style={styles.infoRow}>
             <Text style={[styles.infoLabel, { color: currentTheme.text + '80' }]}>ONYOMI</Text>
@@ -236,7 +232,6 @@ export default function KanjiDetailsPage() {
           </View>
         </View>
 
-        {/* Vocabulary Sections */}
         {kanjiData.onyomiWords.length > 0 && (
           <View style={styles.section}>
             <Text style={[styles.sectionTitle, { color: currentTheme.text }]}>Onyomi Vocabulary</Text>
@@ -255,7 +250,6 @@ export default function KanjiDetailsPage() {
           </View>
         )}
 
-        {/* Examples Section */}
         {kanjiData.examples.length > 0 && (
           <View style={styles.section}>
             <Text style={[styles.sectionTitle, { color: currentTheme.text }]}>Usage Examples</Text>
