@@ -21,7 +21,7 @@ Codul sursă integral poate fi consultat la următoarele adrese:
 
 ---
 
-## 3. Cerințe de Sistem (Prerechizite)
+## 3. Cerințe de Sistem
 Pentru a compila și lansa aplicația local, sunt necesare următoarele medii instalate pe stația de lucru:
 
 **Pentru Frontend:**
