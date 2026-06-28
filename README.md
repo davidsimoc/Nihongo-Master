@@ -16,8 +16,8 @@ Proiectul conține întregul cod sursă necesar rulării aplicației Nihongo Mas
 
 ## 2. Adresele Repository-urilor
 Codul sursă integral poate fi consultat la următoarele adrese:  
-**Repository Frontend (React Native):** https://github.com/davidsimoc/Nihongo-Master$0  
-**Repository Backend (Python FastAPI):** https://github.com/davidsimoc/Voice-chat$0  
+**Repository Frontend (React Native):** https://github.com/davidsimoc/Nihongo-Master  
+**Repository Backend (Python FastAPI):** https://github.com/davidsimoc/Voice-chat  
 
 ---
 
