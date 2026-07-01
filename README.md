@@ -1,4 +1,4 @@
-# Nihongo Master - Proiect de Licență
+# Nihongo Master - Aplicație E-learning pentru limba japoneză asistată de Inteligența Artificială
 
 **Autor:** Simoc David-Cristian  
 **Coordonator științific:** Chirila Oana-Sorina  
